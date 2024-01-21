@@ -1,3 +1,6 @@
+use <components/led.scad>
+use <components/pot_rv09.scad>
+
 title = "";
 units = 1;
 inputs = 8;
@@ -9,6 +12,9 @@ gap_tolerance = 0.5;
 panel_thickness = 2;
 panel_height = 101;
 panel_width = 25.4 * units - gap_tolerance;
+
+// Set deep components sit inside the panel
+component_depth = 1;
 
 // Position of left mounting holes
 mount_position_x = 12.3;
@@ -29,6 +35,14 @@ input_hole_height = 2.54 * inputs + 2.54;
 output_hole_x = start_x + 25.4 * units - 2.54 * 3 - 1.27;
 output_hole_height = 2.54 * outputs + 2.54;
 
+pots_rv09 = [];
+
+leds = [];
+
+pot_label_distance = 12;
+pot_label_font_size = 3;
+label_font = "Liberation Sans:style=bold";
+
 module generate_panel(){
     $fn = $preview ? 20 : 100;
 
@@ -39,13 +53,37 @@ module generate_panel(){
             generate_mounting_holes();
             generate_input_holes();
             generate_output_holes();
+            
+            // == Generate components ==
+            for (idx = [0 : len(pots_rv09)]) {
+                if (pots_rv09[idx]) {
+                    echo("POTS RD901F:", idx = pots_rv09[idx]);
+                    generate_pots_rv09(
+                        pots_rv09[idx][0] * 2.54,
+                        pots_rv09[idx][1] * 2.54,
+                        pots_rv09[idx]);
+                }
+            }
+            
+            for (idx = [0 : len(leds)]) {
+                if (leds[idx]) {
+                    echo("LED:", idx = leds[idx]);
+                    generate_leds(
+                        leds[idx][0] * 2.54,
+                        leds[idx][1] * 2.54);
+                }
+            }
+
         }
     }
 }
 
 module generate_input_holes(){
-    translate([input_hole_x, panel_height - input_hole_height - 0.86])
-    #cube([3, input_hole_height, 4]);
+    
+    if (inputs != 0){
+        translate([input_hole_x, panel_height - input_hole_height - 0.86])
+        #cube([3, input_hole_height, 4]);
+    }
     }
 
 module generate_output_holes(){
@@ -81,5 +119,32 @@ module generate_mounting_holes(){
     }
 }
 
+// == Component generators ==
+module generate_leds(x, y, size=3){
+    translate([x, y, component_depth])
+    #led(d = size);
+}
+
+module generate_pots_rv09(x, y, params) {
+    middle_y = 7.5;
+
+    translate([x, y, component_depth])
+    rotate([0, 0, params[3] ? params[3] : 0])
+        #pot_rv09();
+
+    translate([
+        x,
+        y + middle_y + pot_label_distance,
+        panel_thickness - text_depth])
+
+        linear_extrude(height = text_depth + 2)
+        text(
+            params[2],
+            font=label_font,
+            size=pot_label_font_size,
+            halign="center",
+            valign="center");
+}
+// ====
 
 generate_panel();

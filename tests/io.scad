@@ -10,6 +10,6 @@ title_rotate = 90;
 
 units = 1;
 inputs = 8;
-outputs = 2;
+outputs = 8;
 
 generate_panel();
