@@ -1,10 +1,11 @@
 use <components/led.scad>
 use <components/pot_rv09.scad>
+use <components/pin_socket.scad>
 
 title = "";
 units = 1;
-inputs = 8;
-outputs = 8;
+inputs = 2;
+outputs = 2;
 
 text_depth = 1.4;
 gap_tolerance = 0.5;
@@ -29,14 +30,8 @@ title_font_size = 3;
 title_font = "Liberation Sans:style=bold";
 title_rotate = 0;
 
-input_hole_x = start_x + 1.27;
-input_hole_height = 2.54 * inputs + 2.54;
-
-output_hole_x = start_x + 25.4 * units - 2.54 * 3 - 1.27;
-output_hole_height = 2.54 * outputs + 2.54;
-
+pin_sockets = []; //  [x, y, rows, cols]
 pots_rv09 = [];
-
 leds = [];
 
 pot_label_distance = 12;
@@ -51,8 +46,21 @@ module generate_panel(){
         union(){
             generate_title();
             generate_mounting_holes();
-            generate_input_holes();
-            generate_output_holes();
+            
+            // == Generate Standard AE I/O ==
+            for (idx = [0: inputs]) {
+                generate_pin_sockets(
+                    2 * 2.54,
+                    (39 - inputs) * 2.54,
+                    [0, 0, 1, inputs]);
+            }
+            
+            for (idx = [0: outputs]) {
+                generate_pin_sockets(
+                    8 * 2.54,
+                    (39 - outputs) * 2.54,
+                    [0, 0, 1, outputs]);
+            }
             
             // == Generate components ==
             for (idx = [0 : len(pots_rv09)]) {
@@ -74,21 +82,19 @@ module generate_panel(){
                 }
             }
 
+            for (idx = [0 : len(pin_sockets)]) {
+                if (pin_sockets[idx]) {
+                    echo("2.54 Pin Sockets:", idx = pin_sockets[idx]);
+                    generate_pin_sockets(
+                        pin_sockets[idx][0] * 2.54,
+                        pin_sockets[idx][1] * 2.54,
+                        pin_sockets[idx]);
+                }
+            }
+            
         }
     }
 }
-
-module generate_input_holes(){
-    
-    if (inputs != 0){
-        translate([input_hole_x, panel_height - input_hole_height - 0.86])
-        #cube([3, input_hole_height, 4]);
-    }
-    }
-
-module generate_output_holes(){
-    translate([output_hole_x, panel_height - output_hole_height - 0.86])
-    #cube([3, output_hole_height, 4]);}
 
 module generate_title(){
     translate([title_x, title_y, panel_thickness - text_depth])
@@ -120,6 +126,12 @@ module generate_mounting_holes(){
 }
 
 // == Component generators ==
+module generate_pin_sockets(x, y, params){
+    translate([x, y, component_depth])
+    #pin_socket(params[2], params[3]);
+}
+
+
 module generate_leds(x, y, size=3){
     translate([x, y, component_depth])
     #led(d = size);
