@@ -1,5 +1,5 @@
 # [WIP] AEPanelMaker
-NOT YET READY! A library for generating AEModular oanels in OpenSCAD.
+NOT YET READY! A library for generating AEModular panels in OpenSCAD.
 
 ## Usage
 
@@ -62,6 +62,7 @@ pots_rv09 = [
 
 ## Limitations and Caveats
 1. By default, alignment in this library will be based on standard perfboard spacing (a 2.54mm grid) to make it easy for DIYers to build quick prototypes. This might make it more difficult to use with existing PCB-based AE modules.
+2. Because the distance between standard AE mounting holes is not divisble by 2.54mm (perfboards), I had to align everything to one mounting hole (bottom-left). Because of this, you'll have to drill the top mounting holes a little wider to give the stand-offs a bit more wiggle room.
 2. Input and output pins are farther away from the edges than usual AE modules. This is to help make the panels work with rough-cut perfboards.
 
 ## References

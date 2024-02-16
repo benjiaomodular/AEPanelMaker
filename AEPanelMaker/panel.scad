@@ -3,9 +3,9 @@ use <components/pot_rv09.scad>
 use <components/pin_socket.scad>
 
 title = "";
-units = 1;
-inputs = 2;
-outputs = 2;
+units = 2;
+inputs = 9;
+outputs = 5;
 
 text_depth = 1.4;
 gap_tolerance = 0.5;
@@ -50,16 +50,16 @@ module generate_panel(){
             // == Generate Standard AE I/O ==
             for (idx = [0: inputs]) {
                 generate_pin_sockets(
-                    2 * 2.54,
-                    (39 - inputs) * 2.54,
-                    [0, 0, 1, inputs]);
+                    start_x + 2.54,
+                    start_y + (38 - inputs) * 2.54 ,
+                    [0, 0, inputs, 1]);
             }
             
             for (idx = [0: outputs]) {
                 generate_pin_sockets(
-                    8 * 2.54,
-                    (39 - outputs) * 2.54,
-                    [0, 0, 1, outputs]);
+                    start_x + ((9 * units) - 1) * 2.54,
+                    start_y + (38 - outputs) * 2.54,
+                    [0, 0, outputs,  1]);
             }
             
             // == Generate components ==
@@ -67,8 +67,8 @@ module generate_panel(){
                 if (pots_rv09[idx]) {
                     echo("POTS RD901F:", idx = pots_rv09[idx]);
                     generate_pots_rv09(
-                        pots_rv09[idx][0] * 2.54,
-                        pots_rv09[idx][1] * 2.54,
+                        start_x + pots_rv09[idx][0] * 2.54,
+                        start_y + pots_rv09[idx][1] * 2.54,
                         pots_rv09[idx]);
                 }
             }
@@ -77,8 +77,8 @@ module generate_panel(){
                 if (leds[idx]) {
                     echo("LED:", idx = leds[idx]);
                     generate_leds(
-                        leds[idx][0] * 2.54,
-                        leds[idx][1] * 2.54);
+                        start_x + leds[idx][0] * 2.54,
+                        start_y + leds[idx][1] * 2.54);
                 }
             }
 
@@ -86,8 +86,8 @@ module generate_panel(){
                 if (pin_sockets[idx]) {
                     echo("2.54 Pin Sockets:", idx = pin_sockets[idx]);
                     generate_pin_sockets(
-                        pin_sockets[idx][0] * 2.54,
-                        pin_sockets[idx][1] * 2.54,
+                        start_x + pin_sockets[idx][0] * 2.54,
+                        start_y + pin_sockets[idx][1] * 2.54,
                         pin_sockets[idx]);
                 }
             }
@@ -107,7 +107,7 @@ module generate_mounting_holes(){
     
     // Top-Left
     translate([12.3, panel_height - 3.4, 0])
-    cylinder(r = 1.6, h = 10, center = true);
+    #cylinder(r = 1.6, h = 10, center = true);
    
     // Bottom-Left
     translate([12.3, 3.4, 0])
@@ -115,11 +115,11 @@ module generate_mounting_holes(){
     
     if (units > 1) {
         // Top-Right
-        translate([panel_width - 12.3, panel_height - 3.4, 0])
+        translate([12.3 + (units-1) * 25.4, panel_height - 3.4, 0])
         cylinder(r = 1.6, h = 10, center = true);
        
         // Bottom-Right
-        translate([panel_width - 12.3, 3.4, 0])
+        translate([12.3 + (units-1) * 25.4, 3.4, 0])
         cylinder(r = 1.6, h = 10, center = true);
     
     }

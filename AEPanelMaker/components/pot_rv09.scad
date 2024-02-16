@@ -13,8 +13,8 @@ module pot_rv09() {
         
         translate([0, 0, -10])
             union() {
-                translate([-5, -6.5, 0])
-                cube([10, 12, 10]);
+                translate([-5, -7.5, 0])
+                cube([10, 14, 10]);
             }
     }
 }
