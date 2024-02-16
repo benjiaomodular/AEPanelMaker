@@ -1,5 +1,7 @@
-# [WIP] AEPanelMaker
-NOT YET READY! A library for generating AEModular panels in OpenSCAD.
+# AEPanelMaker
+[![CC BY 4.0][cc-by-shield]][cc-by]
+
+A library for generating AEModular panels in OpenSCAD.
 
 ## Usage
 
@@ -68,3 +70,11 @@ pots_rv09 = [
 ## References
 
 1. The AEM Technical Guide - https://docs.google.com/document/d/1loThrZ889Fn-SoxIRxbMBtzF8Ja44n78pzIcUGyLN20/edit
+
+
+## LICENSE
+This library is licensed under a
+[Creative Commons Attribution 4.0 International License][cc-by].
+
+[cc-by]: http://creativecommons.org/licenses/by/4.0/
+[cc-by-shield]: https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg
